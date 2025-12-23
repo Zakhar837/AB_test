@@ -199,6 +199,18 @@
             line-height: 1.3;
             display: block;
         }
+        /* Стили для печати по слайдам */
+        @media print {
+            .slide {
+                page-break-after: always;   /* новый лист после каждого слайда */
+                page-break-inside: avoid;   /* не делить слайд на части */
+            }
+
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+        }
     </style>
 </head>
 <body class="theme-light">
