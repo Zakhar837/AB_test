@@ -293,19 +293,6 @@
         </div>
     </section>
 
-    <!-- Slide 5: Metric Types -->
-    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-        <h2 class="mb-6" style="color: #0284c7; font-size: 3.4rem;">Типы метрик по математике</h2>
-        <div class="card-container">
-            <ul style="color: #1e293b;">
-                <li><strong>Доли/конверсии</strong> (0/1): CTR, conversion rate, CR — использовать z‑тест для долей</li>
-                <li><strong>Средние значения</strong>: ARPU, средний чек, время — Welch t‑тест или bootstrap</li>
-                <li><strong>Соотношения</strong> (ratio): метрики вида «одно/другое» — непараметрические или bootstrap</li>
-                <li><strong>Перцентили/порядковые</strong>: медиана, 90-й перцентиль — bootstrap или Mann–Whitney</li>
-            </ul>
-        </div>
-    </section>
-
     <!-- Slide 6: Parametric vs Non-parametric -->
     <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
         <h2 style="color: #0284c7; font-size: 3rem; margin-bottom: 1rem; white-space: nowrap;">Параметрические vs Непараметрические</h2>
@@ -350,7 +337,7 @@
             <thead>
             <tr class="table-header">
                 <th style="color: #ffffff; width: 50%;">Параметрические</th>
-                <th style="color: #ffffff; width: 50%;">Непараметрические / Универсальные</th>
+                <th style="color: #ffffff; width: 50%;">Непараметрические</th>
             </tr>
             </thead>
             <tbody>
@@ -396,6 +383,19 @@
             </tr>
             </tbody>
         </table>
+    </section>
+
+    <!-- Slide 5: Metric Types -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 3.4rem;">Типы метрик по математике</h2>
+        <div class="card-container">
+            <ul style="color: #1e293b;">
+                <li><strong>Доли/конверсии</strong> (0/1): CTR, conversion rate, CR — использовать z‑тест для долей</li>
+                <li><strong>Средние значения</strong>: ARPU, средний чек, время — Welch t‑тест или bootstrap</li>
+                <li><strong>Соотношения</strong> (ratio): метрики вида «одно/другое» — непараметрические или bootstrap</li>
+                <li><strong>Перцентили/порядковые</strong>: медиана, 90-й перцентиль — bootstrap или Mann–Whitney</li>
+            </ul>
+        </div>
     </section>
 
     <!-- Slide 8: When to use which -->
@@ -552,32 +552,6 @@
         </div>
     </section>
 
-    <!-- Slide 16: Common Mistakes in Detail -->
-    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-        <h2 class="mb-6" style="color: #0284c7; font-size: 3.4rem;">Главные ошибки в A/B тестировании</h2>
-        <div class="card-container">
-            <ul style="color: #1e293b;">
-                <li><strong>Peeking (подглядывание):</strong> смотреть результаты до окончания теста → ошибка I рода</li>
-                <li><strong>P-hacking (подбор результата):</strong> менять гипотезы/метрики, пока не получишь p &lt; 0.05</li>
-                <li><strong>Отсутствие гипотезы:</strong> запустить тест без чёткой цели и критериев остановки</li>
-                <li><strong>Игнорирование guardrail метрик:</strong> пустил изменение, которое повысило CR, но сломало UX</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- Slide 17: Sample Size and Power -->
-    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-        <h2 class="mb-6" style="color: #0284c7; font-size: 3.4rem;">Размер выборки и мощность теста</h2>
-        <div class="card-container">
-            <ul style="color: #1e293b;">
-                <li><strong>H₀</strong> (нулевая): между группами нет разницы</li>
-                <li><strong>H₁</strong> (альтернативная): есть разница в интересующую нас сторону</li>
-                <li>Уровень значимости <strong>α</strong> (обычно 0.05) — вероятность ошибки I рода</li>
-                <li>Мощность теста (обычно 0.80) — способность обнаружить истинный эффект</li>
-                <li>Минимальный эффект (MDE) — какую разницу хотим поймать</li>
-            </ul>
-        </div>
-    </section>
 
     <!-- Slide 18: Practical Steps -->
     <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
@@ -602,20 +576,6 @@
             <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.5rem;">Правило:</strong> если p-value &lt; α (обычно 0.05) → результат статистически значим</p>
             <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.5rem;">Доверительный интервал (CI)</strong> — диапазон для истинной разницы между группами</p>
             <p style="color: #1e293b;">Если 0 не в интервале → статистически значимо на уровне 5%</p>
-        </div>
-    </section>
-
-    <!-- Slide 20: Best Practices -->
-    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-        <h2 class="mb-6" style="color: #0284c7; font-size: 3.4rem;">Лучшие практики в A/B тестировании</h2>
-        <div class="card-container">
-            <ul style="color: #1e293b;">
-                <li><strong>Зафиксируй гипотезу заранее:</strong> не меняй её после просмотра данных</li>
-                <li><strong>Не подглядывай:</strong> жди окончания теста, установи дату завершения заранее</li>
-                <li><strong>Используй несколько метрик:</strong> primary (главная) + guardrail (ограничители) + proxy (ранние сигналы)</li>
-                <li><strong>Проверь дизайн:</strong> рандомизация верна? Группы независимы? Нет утечек трафика?</li>
-                <li><strong>Документируй результаты:</strong> даже если не значимо, напиши отчёт и архивируй для повторного использования</li>
-            </ul>
         </div>
     </section>
 
