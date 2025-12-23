@@ -10,6 +10,13 @@
             --font-weight-display: 600;
             --font-family-content: Arial, sans-serif;
             --font-weight-content: 400;
+            --slide-width: 1280px; /* Стандарт HD 16:9 */
+            --slide-height: 720px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body.theme-light {
@@ -198,6 +205,18 @@
             font-size: 0.85rem;
             line-height: 1.3;
             display: block;
+        }
+        /* Стили для печати по слайдам */
+        @media print {
+            .slide {
+                page-break-after: always;   /* новый лист после каждого слайда */
+                page-break-inside: avoid;   /* не делить слайд на части */
+            }
+
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
         }
     </style>
 </head>
@@ -463,7 +482,61 @@
     </div>
 </section>
 
-<!-- Slide 14: Methodological Challenges -->
+<!-- Slide 14 (FIXED): Equal Image Heights -->
+<section class="slide col" style="background-color: #ffffff; color: #0f172a; position: relative; padding: 3rem 4rem;">
+
+    <!-- Заголовок и подзаголовок в одной строке -->
+    <div style="margin-bottom: 1rem; display: flex; align-items: baseline; gap: 1rem; flex-shrink: 0;">
+        <h2 style="color: #0284c7; font-size: 2.75rem; line-height: 1; margin: 0;">Наглядный пример</h2>
+        <span style="color: #64748b; font-size: 1.75rem; font-weight: normal;">«Купить в один клик»</span>
+    </div>
+
+    <!-- Основной контент -->
+    <!-- min-height: 0 важно для корректной работы вложенных флексов -->
+    <div style="display: flex; flex: 1; gap: 2rem; overflow: hidden; align-items: center; min-height: 0;">
+
+        <!-- Левая колонка: Картинки -->
+        <div style="flex: 1.8; display: flex; flex-direction: column; gap: 1rem; height: 100%;">
+
+            <!-- Картинка 1: Control (50% высоты) -->
+            <!-- min-height: 0 заставляет блок сжиматься, а не растягиваться по контенту -->
+            <div style="flex: 1; position: relative; width: 100%; min-height: 0;">
+                <div style="position: absolute; top: 0; left: 0; background: rgba(15, 23, 42, 0.6); color: white; padding: 2px 10px; font-size: 0.85rem; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2;">
+                    Группа A
+                </div>
+                <img src="./ozon_control.jpg" alt="Control Version" style="width: 100%; height: 100%; object-fit: contain; object-position: center;">
+            </div>
+
+            <!-- Картинка 2: Test (50% высоты) -->
+            <div style="flex: 1; position: relative; width: 100%; min-height: 0;">
+                <div style="position: absolute; top: 0; left: 0; background: rgba(2, 132, 199, 0.8); color: white; padding: 2px 10px; font-size: 0.85rem; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2;">
+                    Группа B
+                </div>
+                <img src="./ozon_test.jpg" alt="Test Version" style="width: 100%; height: 100%; object-fit: contain; object-position: center;">
+            </div>
+
+        </div>
+
+        <!-- Правая колонка: Текст -->
+        <div style="flex: 1.2; display: flex; flex-direction: column; gap: 1.5rem; justify-content: center;">
+
+            <!-- Карточка Гипотезы -->
+            <div style="background: #ffffff; padding: 1.2rem; border-radius: 10px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <h3 style="color: #10b981; font-size: 1.1rem; margin-bottom: 0.5rem;">🚀 Гипотеза</h3>
+                <p style="font-size: 0.95rem; color: #1e293b; line-height: 1.4;">Добавление кнопки сократит путь пользователя и увеличит <strong>CR (конверсию)</strong>.</p>
+            </div>
+
+            <!-- Карточка Риска -->
+            <div style="background: #ffffff; padding: 1.2rem; border-radius: 10px; border-left: 5px solid #dc2626; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <h3 style="color: #dc2626; font-size: 1.1rem; margin-bottom: 0.5rem;">⚠️ Риск</h3>
+                <p style="font-size: 0.95rem; color: #1e293b; line-height: 1.4;">Пользователи перестанут набирать корзину для бесплатной доставки → упадет <strong>Средний чек</strong>.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Slide 15: Methodological Challenges -->
 <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
     <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Методологические сложности</h2>
     <div class="card-container">
@@ -476,7 +549,7 @@
     </div>
 </section>
 
-<!-- Slide 15: Common Mistakes in Detail -->
+<!-- Slide 16: Common Mistakes in Detail -->
 <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
     <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Главные ошибки в A/B тестировании</h2>
     <div class="card-container">
@@ -489,7 +562,7 @@
     </div>
 </section>
 
-<!-- Slide 16: Sample Size and Power -->
+<!-- Slide 17: Sample Size and Power -->
 <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
     <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Размер выборки и мощность теста</h2>
     <div class="card-container">
@@ -503,7 +576,7 @@
     </div>
 </section>
 
-<!-- Slide 17: Practical Steps -->
+<!-- Slide 18: Practical Steps -->
 <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
     <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Этапы проведения A/B теста</h2>
     <div class="card-container">
@@ -518,7 +591,7 @@
     </div>
 </section>
 
-<!-- Slide 18: P-value and Significance -->
+<!-- Slide 19: P-value and Significance -->
 <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
     <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">P-value и статистическая значимость</h2>
     <div class="card-container">
@@ -529,7 +602,7 @@
     </div>
 </section>
 
-<!-- Slide 19: Best Practices -->
+<!-- Slide 20: Best Practices -->
 <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
     <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Лучшие практики в A/B тестировании</h2>
     <div class="card-container">
@@ -543,7 +616,7 @@
     </div>
 </section>
 
-<!-- Slide 20: Example Analysis -->
+<!-- Slide 21: Example Analysis -->
 <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
     <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Пример: анализ конверсии</h2>
     <div class="card-container">
@@ -556,7 +629,7 @@
     </div>
 </section>
 
-<!-- Slide 21: Python Example -->
+<!-- Slide 22: Python Example -->
 <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
     <h2 class="mb-4" style="color: #0284c7; font-size: 2.75rem;">Python: z-тест для конверсии</h2>
     <div class="code-block" style="padding: 1.5rem; font-size: 0.9rem; line-height: 1.6;">
@@ -572,7 +645,7 @@
     </div>
 </section>
 
-<!-- Slide 22: Key Takeaways -->
+<!-- Slide 23: Key Takeaways -->
 <section class="slide p-16 col center" style="background-color: #f8fafc; color: #0f172a;">
     <h2 class="text-4xl mb-8" style="color: #0284c7; font-size: 2.75rem;">Итоги</h2>
     <div class="card-container" style="text-align: left; max-width: 750px; margin: 0 auto;">
@@ -586,11 +659,47 @@
     </div>
 </section>
 
-<!-- Slide 23: Thank You -->
+<!-- Slide 24: Thank You -->
 <section class="slide p-16 col center" style="background-color: #f8fafc; color: #0f172a;">
     <h2 class="text-5xl mb-8" style="color: #0284c7;">Спасибо!</h2>
     <p class="text-xl" style="color: #1e293b;">Вопросы?</p>
 </section>
 
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    // Показать слайд по индексу
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            if (i === index) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+    }
+
+    // Переключение вперед/назад
+    function changeSlide(direction) {
+        currentSlide += direction;
+        if (currentSlide < 0) currentSlide = 0;
+        if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+        showSlide(currentSlide);
+    }
+
+    // Управление с клавиатуры
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "ArrowRight" || event.key === " " || event.key === "Enter") {
+            changeSlide(1);
+        } else if (event.key === "ArrowLeft") {
+            changeSlide(-1);
+        }
+    });
+
+    // Инициализация
+    showSlide(0);
+</script>
 </body>
 </html>

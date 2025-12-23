@@ -3,23 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A/B Testing: полный доклад</title>
+    <title>A/B Testing: Презентация</title>
     <style>
         :root {
             --font-family-display: Arial, sans-serif;
             --font-weight-display: 600;
             --font-family-content: Arial, sans-serif;
             --font-weight-content: 400;
-        }
-
-        body.theme-light {
-            --color-bg-base: #ffffff;
-            --color-bg-elevated: #f8fafc;
-            --color-bg-surface: #f1f5f9;
-            --color-text-primary: #0f172a;
-            --color-text-secondary: #1e293b;
-            --color-text-muted: #475569;
-            --color-text-accent: #0284c7;
+            --slide-width: 1280px; /* Стандарт HD 16:9 */
+            --slide-height: 720px;
         }
 
         * {
@@ -31,21 +23,38 @@
         body {
             font-family: var(--font-family-content);
             font-weight: var(--font-weight-content);
-            overflow-x: hidden;
-            background-color: #e2e8f0;
-            padding: 20px;
+            background-color: #1e1e1e; /* Темный фон для режима презентации */
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Скрываем скролл в режиме презентации */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .slide {
-            width: 960px;
-            height: 540px;
-            margin: 0 auto 40px;
-            display: flex;
-            flex-shrink: 0;
+        /* Контейнер для слайдов, чтобы они масштабировались */
+        #presentation-container {
             position: relative;
-            overflow: hidden;
+            width: var(--slide-width);
+            height: var(--slide-height);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            background: white;
+        }
+
+        /* Общие стили слайда */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
             background-color: #ffffff;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease-in-out;
+            z-index: 1;
+            /* Фон слайда */
             background-image:
                     repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(2, 132, 199, 0.03) 2px, rgba(2, 132, 199, 0.03) 4px),
                     repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(2, 132, 199, 0.02) 2px, rgba(2, 132, 199, 0.02) 4px),
@@ -53,6 +62,14 @@
                     radial-gradient(circle at 80% 80%, rgba(2, 132, 199, 0.01) 0%, transparent 50%);
         }
 
+        /* Активный слайд */
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
+        }
+
+        /* Внутренние утилиты */
         .row { display: flex; flex-direction: row; }
         .col { display: flex; flex-direction: column; }
         .center {
@@ -60,18 +77,18 @@
             align-items: center;
             text-align: center;
         }
-        .items-center { align-items: center; }
         .fill-width { flex: 1; }
-
         .gap-lg { gap: 1.5rem; }
         .gap-xl { gap: 2rem; }
-        .p-16 { padding: 4rem; }
+
+        /* Адаптация паддингов под новый размер 1280x720 */
+        .p-16 { padding: 4rem 5rem; }
+        .p-12 { padding: 3rem 4rem; }
+
         .mb-3 { margin-bottom: 0.75rem; }
         .mb-4 { margin-bottom: 1rem; }
         .mb-6 { margin-bottom: 1.5rem; }
         .mb-8 { margin-bottom: 2rem; }
-        .mt-2 { margin-top: 0.5rem; }
-        .mt-4 { margin-top: 1rem; }
         .mt-8 { margin-top: 2rem; }
 
         h1, h2, h3 {
@@ -81,582 +98,597 @@
             margin: 0;
         }
 
-        h1 { font-size: 3.5rem; }
-        h2 { font-size: 2.75rem; }
-        h3 { font-size: 1.5rem; }
+        h1 { font-size: 4.5rem; }
+        h2 { font-size: 3.2rem; }
+        h3 { font-size: 1.8rem; }
 
-        .text-6xl { font-size: 4rem; }
-        .text-4xl { font-size: 2.5rem; }
-        .text-2xl { font-size: 1.75rem; }
-        .text-xl { font-size: 1.4rem; }
-        .text-lg { font-size: 1.2rem; }
+        ul, ol { margin-left: 2.5rem; line-height: 1.8; }
+        li { margin-bottom: 0.8rem; font-size: 1.4rem; color: #1e293b; }
+        p { line-height: 1.6; font-size: 1.4rem; color: #1e293b; }
 
-        ul, ol {
-            margin-left: 2rem;
-            line-height: 2;
-        }
-
-        li { margin-bottom: 0.5rem; font-size: 1.1rem; }
-
-        p { line-height: 1.6; font-size: 1.1rem; }
-
+        /* Карточки и блоки */
         .card-container {
             background-color: #ffffff;
-            padding: 1.8rem;
+            padding: 2rem;
             border: 2px solid #0284c7;
-            border-radius: 12px;
+            border-radius: 16px;
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card-container:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.2);
         }
 
         .code-block {
             background-color: #1e293b;
             color: #e2e8f0;
             padding: 2rem;
-            border-radius: 10px;
+            border-radius: 12px;
             font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            overflow-x: auto;
+            font-size: 1.2rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
-        .code-block p {
-            font-size: 1rem;
-            margin: 0.4rem 0;
-            color: #e2e8f0;
-        }
-
-        .code-block span {
-            font-weight: normal;
-        }
-
-        /* Styles for tables */
+        /* Таблицы */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1.5rem;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
+            font-size: 1.2rem;
+        }
+        th, td { border: 1px solid #cbd5e1; padding: 1rem; text-align: left; vertical-align: middle; }
+        th { background-color: #0284c7; color: white; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        .comparison-table td:first-child { font-weight: bold; color: #0284c7; background-color: #f0f9ff; }
+
+        /* --- НАВИГАЦИЯ --- */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            border: none;
+            width: 60px;
+            height: 100px;
+            font-size: 3rem;
+            cursor: pointer;
+            z-index: 100;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
         }
 
-        th, td {
-            border: 1px solid #cbd5e1;
-            padding: 1rem;
-            text-align: left;
-            font-size: 0.95rem;
-            vertical-align: middle;
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
-        th {
-            background-color: #0284c7;
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 1.05rem;
-            border: 1px solid #0284c7;
-        }
+        #prev-btn { left: 20px; }
+        #next-btn { right: 20px; }
 
-        tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-
-        tr:nth-child(odd) {
-            background-color: #ffffff;
-        }
-
-        /* Table specific styles */
-        .comparison-table td:first-child {
-            font-weight: bold;
-            color: #0284c7;
-            background-color: #f0f9ff;
-        }
-
-        .table-header {
-            background-color: #0284c7;
-            color: #ffffff;
-        }
-
-        /* Compact table style for Slide 7 */
-        .compact-table td {
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-        }
-        .compact-table strong {
-            display: block;
-            margin-bottom: 0.2rem;
-            color: #0284c7;
-            font-size: 0.95rem;
-        }
-        .compact-table span {
-            color: #475569;
-            font-size: 0.85rem;
-            line-height: 1.3;
-            display: block;
-        }
-        /* Стили для печати по слайдам */
+        /* --- PRINT / PDF CSS --- */
         @media print {
-            .slide {
-                page-break-after: always;   /* новый лист после каждого слайда */
-                page-break-inside: avoid;   /* не делить слайд на части */
+            @page {
+                size: landscape;
+                margin: 0;
             }
-
             body {
-                background: #ffffff;
-                padding: 0;
+                background: white;
+                height: auto;
+                width: auto;
+                overflow: visible;
+                display: block;
             }
+            #presentation-container {
+                width: 100% !important;
+                height: auto !important;
+                box-shadow: none;
+            }
+            .slide {
+                position: relative;
+                opacity: 1;
+                visibility: visible;
+                page-break-after: always;
+                height: 100vh; /* Слайд на всю страницу PDF */
+                width: 100%;
+                top: auto;
+                left: auto;
+            }
+            .nav-btn { display: none !important; }
         }
     </style>
 </head>
+
 <body class="theme-light">
 
-<!-- Slide 1: Title -->
-<section class="slide p-16 col center" style="background-color: #f8fafc; color: #0f172a;">
-    <h1 class="text-6xl mb-4" style="color: #0284c7;">A/B Testing</h1>
-    <p class="text-2xl" style="color: #1e293b;">Полный доклад: от теории к практике</p>
-    <p class="text-lg mt-8" style="color: #475569;">Статистика, метрики и примеры применения</p>
-</section>
+<!-- Кнопки навигации -->
+<button id="prev-btn" class="nav-btn" onclick="changeSlide(-1)">&#10094;</button>
+<button id="next-btn" class="nav-btn" onclick="changeSlide(1)">&#10095;</button>
 
-<!-- Slide 2: What is A/B Testing -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Что такое A/B тест?</h2>
-    <div class="fill-width card-container">
-        <ul style="color: #1e293b;">
-            <li>Контролируемый эксперимент, где пользователей <strong>случайно делят</strong> на две группы</li>
-            <li>Группа A видит текущую версию (control), группа B — изменённую (treatment)</li>
-            <li>Сравнивают одну ключевую метрику между группами</li>
-            <li>На основе <strong>статистики</strong> принимают решение (не на основе интуиции)</li>
-        </ul>
-    </div>
-</section>
+<div id="presentation-container">
 
-<!-- Slide 3: Why A/B Testing -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Зачем A/B тестировать?</h2>
-    <div class="card-container">
-        <ul style="color: #1e293b;">
-            <li><strong>Снижает риск</strong> ошибочных решений</li>
-            <li>Показывает реальный эффект изменений в числах</li>
-            <li>Помогает приоритизировать гипотезы</li>
-            <li>Создаёт культуру <strong>data-driven</strong> принятия решений</li>
-            <li>Применим к продукту, маркетингу, UX, выручке</li>
-        </ul>
-    </div>
-</section>
+    <!-- Slide 1: Title -->
+    <section class="slide p-16 col center" style="background-color: #f8fafc; color: #0f172a;">
+        <h1 class="text-6xl mb-4" style="color: #0284c7;">A/B Testing</h1>
+        <p class="text-2xl" style="color: #1e293b;">Полный доклад: от теории к практике</p>
+        <p class="text-lg mt-8" style="color: #475569;">Статистика, метрики и примеры применения</p>
+    </section>
 
-<!-- Slide 4: Key Metrics -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-3" style="color: #0284c7; font-size: 2.75rem;">Основные виды метрик</h2>
-    <div class="row fill-width gap-lg" style="margin-top: 0.5rem;">
-        <div class="fill-width card-container" style="border-left: 5px solid #0284c7; padding: 1.2rem; display: flex; flex-direction: column;">
-            <h3 style="color: #0284c7; font-size: 1.2rem; margin-bottom: 0.8rem;">🎯 Целевая (Primary)</h3>
-            <p style="color: #1e293b; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.8rem;">
-                <strong>Основа принятия решения.</strong> Именно эту метрику мы хотим улучшить гипотезой. Она напрямую отражает бизнес-ценность изменения.
-            </p>
-            <p style="color: #475569; font-size: 0.85rem; margin-top: auto;">
-                <em>Примеры: Conversion Rate, ARPU, Retention D7, Средний чек (AOV).</em>
-            </p>
+    <!-- Slide 2: What is A/B Testing -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Что такое A/B тест?</h2>
+        <div class="fill-width card-container">
+            <ul style="color: #1e293b;">
+                <li>Контролируемый эксперимент, где пользователей <strong>случайно делят</strong> на две группы</li>
+                <li>Группа A видит текущую версию (control), группа B — изменённую (treatment)</li>
+                <li>Сравнивают одну ключевую метрику между группами</li>
+                <li>На основе <strong>статистики</strong> принимают решение (не на основе интуиции)</li>
+            </ul>
         </div>
-        <div class="fill-width card-container" style="border-left: 5px solid #10b981; padding: 1.2rem; display: flex; flex-direction: column;">
-            <h3 style="color: #10b981; font-size: 1.2rem; margin-bottom: 0.8rem;">⚡ Прокси (Proxy)</h3>
-            <p style="color: #1e293b; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.8rem;">
-                <strong>Быстрый сигнал.</strong> Используется, если целевая метрика слишком "медленная" (напр., LTV) или малочувствительная. Имеет высокую корреляцию с целью.
-            </p>
-            <p style="color: #475569; font-size: 0.85rem; margin-top: auto;">
-                <em>Примеры: CTR (вместо покупки), Добавление в корзину, Просмотр цены.</em>
-            </p>
+    </section>
+
+    <!-- Slide 3: Why A/B Testing -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Зачем A/B тестировать?</h2>
+        <div class="card-container">
+            <ul style="color: #1e293b;">
+                <li><strong>Снижает риск</strong> ошибочных решений</li>
+                <li>Показывает реальный эффект изменений в числах</li>
+                <li>Помогает приоритизировать гипотезы</li>
+                <li>Создаёт культуру <strong>data-driven</strong> принятия решений</li>
+                <li>Применим к продукту, маркетингу, UX, выручке</li>
+            </ul>
         </div>
-        <div class="fill-width card-container" style="border-left: 5px solid #dc2626; padding: 1.2rem; display: flex; flex-direction: column;">
-            <h3 style="color: #dc2626; font-size: 1.2rem; margin-bottom: 0.8rem;">🛡️ Защитная (Guardrail)</h3>
-            <p style="color: #1e293b; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.8rem;">
-                <strong>Контроль качества.</strong> Метрики, которые критически важно НЕ ухудшить. Если Primary растет, а Guardrail падает — тест неуспешен.
-            </p>
-            <p style="color: #475569; font-size: 0.85rem; margin-top: auto;">
-                <em>Примеры: Скорость загрузки, Отписки (Unsub), Количество ошибок (Crash rate).</em>
-            </p>
+    </section>
+
+    <!-- Slide 4: Key Metrics -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-3" style="color: #0284c7; font-size: 2.75rem;">Основные виды метрик</h2>
+        <div class="row fill-width gap-lg" style="margin-top: 0.5rem;">
+            <div class="fill-width card-container" style="border-left: 5px solid #0284c7; padding: 1.2rem; display: flex; flex-direction: column;">
+                <h3 style="color: #0284c7; font-size: 1.2rem; margin-bottom: 0.8rem;">🎯 Целевая (Primary)</h3>
+                <p style="color: #1e293b; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.8rem;">
+                    <strong>Основа принятия решения.</strong> Именно эту метрику мы хотим улучшить гипотезой. Она напрямую отражает бизнес-ценность изменения.
+                </p>
+                <p style="color: #475569; font-size: 0.85rem; margin-top: auto;">
+                    <em>Примеры: Conversion Rate, ARPU, Retention D7, Средний чек (AOV).</em>
+                </p>
+            </div>
+            <div class="fill-width card-container" style="border-left: 5px solid #10b981; padding: 1.2rem; display: flex; flex-direction: column;">
+                <h3 style="color: #10b981; font-size: 1.2rem; margin-bottom: 0.8rem;">⚡ Прокси (Proxy)</h3>
+                <p style="color: #1e293b; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.8rem;">
+                    <strong>Быстрый сигнал.</strong> Используется, если целевая метрика слишком "медленная" (напр., LTV) или малочувствительная. Имеет высокую корреляцию с целью.
+                </p>
+                <p style="color: #475569; font-size: 0.85rem; margin-top: auto;">
+                    <em>Примеры: CTR (вместо покупки), Добавление в корзину, Просмотр цены.</em>
+                </p>
+            </div>
+            <div class="fill-width card-container" style="border-left: 5px solid #dc2626; padding: 1.2rem; display: flex; flex-direction: column;">
+                <h3 style="color: #dc2626; font-size: 1.2rem; margin-bottom: 0.8rem;">🛡️ Защитная (Guardrail)</h3>
+                <p style="color: #1e293b; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.8rem;">
+                    <strong>Контроль качества.</strong> Метрики, которые критически важно НЕ ухудшить. Если Primary растет, а Guardrail падает — тест неуспешен.
+                </p>
+                <p style="color: #475569; font-size: 0.85rem; margin-top: auto;">
+                    <em>Примеры: Скорость загрузки, Отписки (Unsub), Количество ошибок (Crash rate).</em>
+                </p>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Slide 5: Metric Types -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Типы метрик по математике</h2>
-    <div class="card-container">
-        <ul style="color: #1e293b;">
-            <li><strong>Доли/конверсии</strong> (0/1): CTR, conversion rate, CR — использовать z‑тест для долей</li>
-            <li><strong>Средние значения</strong>: ARPU, средний чек, время — Welch t‑тест или bootstrap</li>
-            <li><strong>Соотношения</strong> (ratio): метрики вида «одно/другое» — непараметрические или bootstrap</li>
-            <li><strong>Перцентили/порядковые</strong>: медиана, 90-й перцентиль — bootstrap или Mann–Whitney</li>
-        </ul>
-    </div>
-</section>
-
-<!-- Slide 6: Parametric vs Non-parametric -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 style="color: #0284c7; font-size: 2.4rem; margin-bottom: 1rem; white-space: nowrap;">Параметрические vs Непараметрические</h2>
-
-    <table class="comparison-table" style="font-size: 1rem;">
-        <thead>
-        <tr class="table-header">
-            <th style="width: 20%;">Критерий</th>
-            <th style="width: 40%;">Параметрические</th>
-            <th style="width: 40%;">Непараметрические</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Требования</td>
-            <td>Нормальное распределение данных</td>
-            <td>Без строгих требований (free)</td>
-        </tr>
-        <tr>
-            <td>На чем основаны</td>
-            <td>Средние значения (Mean)</td>
-            <td>Ранги / Медианы</td>
-        </tr>
-        <tr>
-            <td>Выбросы</td>
-            <td>Очень чувствительны (искажают)</td>
-            <td>Устойчивы (Robust)</td>
-        </tr>
-        <tr>
-            <td>Мощность</td>
-            <td>Выше (если данные "хорошие")</td>
-            <td>Чуть ниже, но надежнее</td>
-        </tr>
-        </tbody>
-    </table>
-</section>
-
-<!-- Slide 7: Statistical Tests Overview (Compact Cheat Sheet) -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-3" style="color: #0284c7; font-size: 2.75rem;">Статистические тесты для A/B</h2>
-    <table class="compact-table" style="margin-top: 0.2rem;">
-        <thead>
-        <tr class="table-header">
-            <th style="color: #ffffff; width: 50%;">Параметрические</th>
-            <th style="color: #ffffff; width: 50%;">Непараметрические / Универсальные</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                <strong>Z-тест</strong>
-                <span>Для долей (CR, CTR). Нужен n > 30.</span>
-            </td>
-            <td>
-                <strong>Mann–Whitney U</strong>
-                <span>Сравнение рангов. Для скошенных данных (ARPU).</span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <strong>Welch's t-test</strong>
-                <span>Для средних значений. Устойчив к разным дисперсиям.</span>
-            </td>
-            <td>
-                <strong>Bootstrap</strong>
-                <span>Топ выбор. Для Ratio, перцентилей и сложных метрик.</span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <strong>ANOVA</strong>
-                <span>Если групп > 2 (A/B/C тест). Сравнение средних.</span>
-            </td>
-            <td>
-                <strong>χ² test</strong>
-                <span>Для категорий и воронок (хи-квадрат).</span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <strong>Paired t-test</strong>
-                <span>Зависимые выборки (одни люди до/после).</span>
-            </td>
-            <td>
-                <strong>Fisher's Exact</strong>
-                <span>Для долей при малых выборках (редкие события).</span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</section>
-
-<!-- Slide 8: When to use which -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Когда какой тест применять?</h2>
-    <div class="card-container">
-        <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Параметрический:</strong> метрика количественная + нормальное распределение + нет сильных выбросов</p>
-        <p style="color: #1e293b; margin-bottom: 1.8rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Непараметрический:</strong> скошёные данные + выбросы + неопределённое распределение + маленькая выборка</p>
-        <p style="color: #0284c7; margin-bottom: 1rem;"><strong style="font-size: 1.15rem;">Практическое правило:</strong></p>
-        <p style="color: #1e293b;">При сомнениях → выбери bootstrap или проверь с двумя тестами параллельно</p>
-    </div>
-</section>
-
-<!-- Slide 9: Mathematical Foundations -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Математические основы A/B тестов</h2>
-    <div class="card-container">
-        <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Проверка статистических гипотез:</strong> процесс, позволяющий сделать выводы о всех пользователях на основе данных из случайной выборки.</p>
-        <ul style="color: #1e293b;">
-            <li>Выборка репрезентативна при <strong>случайной рандомизации</strong></li>
-            <li>Результаты обобщаются на генеральную совокупность</li>
-            <li>Вероятностный подход: не 100% уверенность, а количественная оценка ошибок</li>
-        </ul>
-    </div>
-</section>
-
-<!-- Slide 10: Hypothesis Formulation -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Формулирование гипотез</h2>
-    <div class="row gap-xl fill-width" style="margin-top: 1.5rem;">
-        <div class="card-container" style="flex: 1;">
-            <h3 style="color: #0284c7; font-size: 1.4rem; margin-bottom: 1.2rem;">H₀ (нулевая гипотеза)</h3>
-            <p style="color: #1e293b;">Нет разницы между A и B. Это то, что мы хотим опровергнуть.</p>
+    <!-- Slide 5: Metric Types -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Типы метрик по математике</h2>
+        <div class="card-container">
+            <ul style="color: #1e293b;">
+                <li><strong>Доли/конверсии</strong> (0/1): CTR, conversion rate, CR — использовать z‑тест для долей</li>
+                <li><strong>Средние значения</strong>: ARPU, средний чек, время — Welch t‑тест или bootstrap</li>
+                <li><strong>Соотношения</strong> (ratio): метрики вида «одно/другое» — непараметрические или bootstrap</li>
+                <li><strong>Перцентили/порядковые</strong>: медиана, 90-й перцентиль — bootstrap или Mann–Whitney</li>
+            </ul>
         </div>
-        <div class="card-container" style="flex: 1;">
-            <h3 style="color: #0284c7; font-size: 1.4rem; margin-bottom: 1.2rem;">H₁ (альтернативная)</h3>
-            <p style="color: #1e293b;">Есть разница. Это гипотеза, которую мы хотим доказать.</p>
+    </section>
+
+    <!-- Slide 6: Parametric vs Non-parametric -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 style="color: #0284c7; font-size: 2.4rem; margin-bottom: 1rem; white-space: nowrap;">Параметрические vs Непараметрические</h2>
+
+        <table class="comparison-table" style="font-size: 1rem;">
+            <thead>
+            <tr class="table-header">
+                <th style="width: 20%;">Критерий</th>
+                <th style="width: 40%;">Параметрические</th>
+                <th style="width: 40%;">Непараметрические</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Требования</td>
+                <td>Нормальное распределение данных</td>
+                <td>Без строгих требований (free)</td>
+            </tr>
+            <tr>
+                <td>На чем основаны</td>
+                <td>Средние значения (Mean)</td>
+                <td>Ранги / Медианы</td>
+            </tr>
+            <tr>
+                <td>Выбросы</td>
+                <td>Очень чувствительны (искажают)</td>
+                <td>Устойчивы (Robust)</td>
+            </tr>
+            <tr>
+                <td>Мощность</td>
+                <td>Выше (если данные "хорошие")</td>
+                <td>Чуть ниже, но надежнее</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Slide 7: Statistical Tests Overview (Compact Cheat Sheet) -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-3" style="color: #0284c7; font-size: 2.75rem;">Статистические тесты для A/B</h2>
+        <table class="compact-table" style="margin-top: 0.2rem;">
+            <thead>
+            <tr class="table-header">
+                <th style="color: #ffffff; width: 50%;">Параметрические</th>
+                <th style="color: #ffffff; width: 50%;">Непараметрические / Универсальные</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <strong>Z-тест</strong>
+                    <span>Для долей (CR, CTR). Нужен n > 30.</span>
+                </td>
+                <td>
+                    <strong>Mann–Whitney U</strong>
+                    <span>Сравнение рангов. Для скошенных данных (ARPU).</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Welch's t-test</strong>
+                    <span>Для средних значений. Устойчив к разным дисперсиям.</span>
+                </td>
+                <td>
+                    <strong>Bootstrap</strong>
+                    <span>Топ выбор. Для Ratio, перцентилей и сложных метрик.</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>ANOVA</strong>
+                    <span>Если групп > 2 (A/B/C тест). Сравнение средних.</span>
+                </td>
+                <td>
+                    <strong>χ² test</strong>
+                    <span>Для категорий и воронок (хи-квадрат).</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Paired t-test</strong>
+                    <span>Зависимые выборки (одни люди до/после).</span>
+                </td>
+                <td>
+                    <strong>Fisher's Exact</strong>
+                    <span>Для долей при малых выборках (редкие события).</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Slide 8: When to use which -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Когда какой тест применять?</h2>
+        <div class="card-container">
+            <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Параметрический:</strong> метрика количественная + нормальное распределение + нет сильных выбросов</p>
+            <p style="color: #1e293b; margin-bottom: 1.8rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Непараметрический:</strong> скошёные данные + выбросы + неопределённое распределение + маленькая выборка</p>
+            <p style="color: #0284c7; margin-bottom: 1rem;"><strong style="font-size: 1.15rem;">Практическое правило:</strong></p>
+            <p style="color: #1e293b;">При сомнениях → выбери bootstrap или проверь с двумя тестами параллельно</p>
         </div>
-    </div>
-    <p style="color: #1e293b; margin-top: 2.5rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Пример:</strong> Изменение цвета кнопки с синего на красный повысит конверсию? (H₁) или не повысит (H₀)?</p>
-</section>
+    </section>
 
-<!-- Slide 11: Error Types -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Типы ошибок в A/B тестах</h2>
-    <div class="row gap-xl fill-width" style="margin-top: 1.5rem;">
-        <div style="flex: 1; background-color: #fef2f2; padding: 1.8rem; border: 2px solid #dc2626; border-radius: 12px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);">
-            <h3 style="color: #dc2626; font-size: 1.4rem; margin-bottom: 1.2rem;">Ошибка I рода (α)</h3>
-            <p style="color: #1e293b;">Отвергли H₀, хотя она верна. Запустили неработающее изменение (False Positive).</p>
-            <p style="color: #1e293b; margin-top: 0.8rem;"><strong>Уровень: α = 0.05 (5%)</strong></p>
+    <!-- Slide 9: Mathematical Foundations -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Математические основы A/B тестов</h2>
+        <div class="card-container">
+            <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Проверка статистических гипотез:</strong> процесс, позволяющий сделать выводы о всех пользователях на основе данных из случайной выборки.</p>
+            <ul style="color: #1e293b;">
+                <li>Выборка репрезентативна при <strong>случайной рандомизации</strong></li>
+                <li>Результаты обобщаются на генеральную совокупность</li>
+                <li>Вероятностный подход: не 100% уверенность, а количественная оценка ошибок</li>
+            </ul>
         </div>
-        <div style="flex: 1; background-color: #fffbeb; padding: 1.8rem; border: 2px solid #ea580c; border-radius: 12px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.1);">
-            <h3 style="color: #ea580c; font-size: 1.4rem; margin-bottom: 1.2rem;">Ошибка II рода (β)</h3>
-            <p style="color: #1e293b;">Не отвергли H₀, хотя она ложна. Пропустили работающее изменение (False Negative).</p>
-            <p style="color: #1e293b; margin-top: 0.8rem;"><strong>Мощность: 1 - β = 0.80 (80%)</strong></p>
+    </section>
+
+    <!-- Slide 10: Hypothesis Formulation -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Формулирование гипотез</h2>
+        <div class="row gap-xl fill-width" style="margin-top: 1.5rem;">
+            <div class="card-container" style="flex: 1;">
+                <h3 style="color: #0284c7; font-size: 1.4rem; margin-bottom: 1.2rem;">H₀ (нулевая гипотеза)</h3>
+                <p style="color: #1e293b;">Нет разницы между A и B. Это то, что мы хотим опровергнуть.</p>
+            </div>
+            <div class="card-container" style="flex: 1;">
+                <h3 style="color: #0284c7; font-size: 1.4rem; margin-bottom: 1.2rem;">H₁ (альтернативная)</h3>
+                <p style="color: #1e293b;">Есть разница. Это гипотеза, которую мы хотим доказать.</p>
+            </div>
         </div>
-    </div>
-</section>
+        <p style="color: #1e293b; margin-top: 2.5rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Пример:</strong> Изменение цвета кнопки с синего на красный повысит конверсию? (H₁) или не повысит (H₀)?</p>
+    </section>
 
-<!-- Slide 12: Real-world Example: Google -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Пример: Google — оттенки синего</h2>
-    <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Мариса Майер (топ-менеджер Google):</strong> протестировала 41 вариант синего цвета для рекламных ссылок</p>
-    <div class="row gap-xl fill-width" style="margin-top: 1.5rem;">
-        <div class="card-container" style="flex: 1;">
-            <h3 style="color: #0284c7; font-size: 1.3rem; margin-bottom: 1rem;">Метрика</h3>
-            <p style="color: #1e293b;">CTR (Click-Through Rate) на рекламные ссылки</p>
+    <!-- Slide 11: Error Types -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Типы ошибок в A/B тестах</h2>
+        <div class="row gap-xl fill-width" style="margin-top: 1.5rem;">
+            <div style="flex: 1; background-color: #fef2f2; padding: 1.8rem; border: 2px solid #dc2626; border-radius: 12px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);">
+                <h3 style="color: #dc2626; font-size: 1.4rem; margin-bottom: 1.2rem;">Ошибка I рода (α)</h3>
+                <p style="color: #1e293b;">Отвергли H₀, хотя она верна. Запустили неработающее изменение (False Positive).</p>
+                <p style="color: #1e293b; margin-top: 0.8rem;"><strong>Уровень: α = 0.05 (5%)</strong></p>
+            </div>
+            <div style="flex: 1; background-color: #fffbeb; padding: 1.8rem; border: 2px solid #ea580c; border-radius: 12px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.1);">
+                <h3 style="color: #ea580c; font-size: 1.4rem; margin-bottom: 1.2rem;">Ошибка II рода (β)</h3>
+                <p style="color: #1e293b;">Не отвергли H₀, хотя она ложна. Пропустили работающее изменение (False Negative).</p>
+                <p style="color: #1e293b; margin-top: 0.8rem;"><strong>Мощность: 1 - β = 0.80 (80%)</strong></p>
+            </div>
         </div>
-        <div class="card-container" style="flex: 1;">
-            <h3 style="color: #0284c7; font-size: 1.3rem; margin-bottom: 1rem;">Результат</h3>
-            <p style="color: #1e293b;">Оптимальный оттенок увеличил выручку на $200 млн/год</p>
+    </section>
+
+    <!-- Slide 12: Real-world Example: Google -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Пример: Google — оттенки синего</h2>
+        <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Мариса Майер (топ-менеджер Google):</strong> протестировала 41 вариант синего цвета для рекламных ссылок</p>
+        <div class="row gap-xl fill-width" style="margin-top: 1.5rem;">
+            <div class="card-container" style="flex: 1;">
+                <h3 style="color: #0284c7; font-size: 1.3rem; margin-bottom: 1rem;">Метрика</h3>
+                <p style="color: #1e293b;">CTR (Click-Through Rate) на рекламные ссылки</p>
+            </div>
+            <div class="card-container" style="flex: 1;">
+                <h3 style="color: #0284c7; font-size: 1.3rem; margin-bottom: 1rem;">Результат</h3>
+                <p style="color: #1e293b;">Оптимальный оттенок увеличил выручку на $200 млн/год</p>
+            </div>
         </div>
-    </div>
-    <p style="color: #475569; margin-top: 2rem; font-style: italic; font-size: 1.05rem;">Этот пример показывает, как даже маленькие изменения на большом трафике дают огромный экономический эффект.</p>
-</section>
+        <p style="color: #475569; margin-top: 2rem; font-style: italic; font-size: 1.05rem;">Этот пример показывает, как даже маленькие изменения на большом трафике дают огромный экономический эффект.</p>
+    </section>
 
-<!-- Slide 13: Real-world Example: Ozon -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Пример: Ozon — элементы карточки товара</h2>
-    <div class="card-container">
-        <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Задача:</strong> оптимизировать позиции и видимость элементов на странице товара (цена, кнопка покупки, характеристики)</p>
-        <ul style="color: #1e293b;">
-            <li>Тестировали: размер и цвет кнопки, расположение цены, порядок секций</li>
-            <li>Метрика: конверсия в покупку, средний чек, возвраты</li>
-            <li>Результат: нашли конфигурацию, повысившую CR на 3-5% и AOV на 2%</li>
-        </ul>
-    </div>
-</section>
+    <!-- Slide 13: Real-world Example: Ozon -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Пример: Ozon — элементы карточки товара</h2>
+        <div class="card-container">
+            <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Задача:</strong> оптимизировать позиции и видимость элементов на странице товара (цена, кнопка покупки, характеристики)</p>
+            <ul style="color: #1e293b;">
+                <li>Тестировали: размер и цвет кнопки, расположение цены, порядок секций</li>
+                <li>Метрика: конверсия в покупку, средний чек, возвраты</li>
+                <li>Результат: нашли конфигурацию, повысившую CR на 3-5% и AOV на 2%</li>
+            </ul>
+        </div>
+    </section>
 
-<!-- Slide 14 (FIXED): Equal Image Heights -->
-<section class="slide col" style="background-color: #ffffff; color: #0f172a; position: relative; padding: 3rem 4rem;">
+    <!-- Slide 14 (FIXED): Equal Image Heights -->
+    <section class="slide col" style="background-color: #ffffff; color: #0f172a; position: relative; padding: 3rem 4rem;">
 
-    <!-- Заголовок и подзаголовок в одной строке -->
-    <div style="margin-bottom: 1rem; display: flex; align-items: baseline; gap: 1rem; flex-shrink: 0;">
-        <h2 style="color: #0284c7; font-size: 2.75rem; line-height: 1; margin: 0;">Наглядный пример</h2>
-        <span style="color: #64748b; font-size: 1.75rem; font-weight: normal;">«Купить в один клик»</span>
-    </div>
+        <!-- Заголовок и подзаголовок в одной строке -->
+        <div style="margin-bottom: 1rem; display: flex; align-items: baseline; gap: 1rem; flex-shrink: 0;">
+            <h2 style="color: #0284c7; font-size: 2.75rem; line-height: 1; margin: 0;">Наглядный пример</h2>
+            <span style="color: #64748b; font-size: 1.75rem; font-weight: normal;">«Купить в один клик»</span>
+        </div>
 
-    <!-- Основной контент -->
-    <!-- min-height: 0 важно для корректной работы вложенных флексов -->
-    <div style="display: flex; flex: 1; gap: 2rem; overflow: hidden; align-items: center; min-height: 0;">
+        <!-- Основной контент -->
+        <!-- min-height: 0 важно для корректной работы вложенных флексов -->
+        <div style="display: flex; flex: 1; gap: 2rem; overflow: hidden; align-items: center; min-height: 0;">
 
-        <!-- Левая колонка: Картинки -->
-        <div style="flex: 1.8; display: flex; flex-direction: column; gap: 1rem; height: 100%;">
+            <!-- Левая колонка: Картинки -->
+            <div style="flex: 1.8; display: flex; flex-direction: column; gap: 1rem; height: 100%;">
 
-            <!-- Картинка 1: Control (50% высоты) -->
-            <!-- min-height: 0 заставляет блок сжиматься, а не растягиваться по контенту -->
-            <div style="flex: 1; position: relative; width: 100%; min-height: 0;">
-                <div style="position: absolute; top: 0; left: 0; background: rgba(15, 23, 42, 0.6); color: white; padding: 2px 10px; font-size: 0.85rem; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2;">
-                    Группа A
+                <!-- Картинка 1: Control (50% высоты) -->
+                <!-- min-height: 0 заставляет блок сжиматься, а не растягиваться по контенту -->
+                <div style="flex: 1; position: relative; width: 100%; min-height: 0;">
+                    <div style="position: absolute; top: 0; left: 0; background: rgba(15, 23, 42, 0.6); color: white; padding: 2px 10px; font-size: 0.85rem; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2;">
+                        Группа A
+                    </div>
+                    <img src="./ozon_control.jpg" alt="Control Version" style="width: 100%; height: 100%; object-fit: contain; object-position: center;">
                 </div>
-                <img src="./ozon_control.jpg" alt="Control Version" style="width: 100%; height: 100%; object-fit: contain; object-position: center;">
-            </div>
 
-            <!-- Картинка 2: Test (50% высоты) -->
-            <div style="flex: 1; position: relative; width: 100%; min-height: 0;">
-                <div style="position: absolute; top: 0; left: 0; background: rgba(2, 132, 199, 0.8); color: white; padding: 2px 10px; font-size: 0.85rem; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2;">
-                    Группа B
+                <!-- Картинка 2: Test (50% высоты) -->
+                <div style="flex: 1; position: relative; width: 100%; min-height: 0;">
+                    <div style="position: absolute; top: 0; left: 0; background: rgba(2, 132, 199, 0.8); color: white; padding: 2px 10px; font-size: 0.85rem; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2;">
+                        Группа B
+                    </div>
+                    <img src="./ozon_test.jpg" alt="Test Version" style="width: 100%; height: 100%; object-fit: contain; object-position: center;">
                 </div>
-                <img src="./ozon_test.jpg" alt="Test Version" style="width: 100%; height: 100%; object-fit: contain; object-position: center;">
+
             </div>
 
+            <!-- Правая колонка: Текст -->
+            <div style="flex: 1.2; display: flex; flex-direction: column; gap: 1.5rem; justify-content: center;">
+
+                <!-- Карточка Гипотезы -->
+                <div style="background: #ffffff; padding: 1.2rem; border-radius: 10px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <h3 style="color: #10b981; font-size: 1.1rem; margin-bottom: 0.5rem;">🚀 Гипотеза</h3>
+                    <p style="font-size: 0.95rem; color: #1e293b; line-height: 1.4;">Добавление кнопки сократит путь пользователя и увеличит <strong>CR (конверсию)</strong>.</p>
+                </div>
+
+                <!-- Карточка Риска -->
+                <div style="background: #ffffff; padding: 1.2rem; border-radius: 10px; border-left: 5px solid #dc2626; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <h3 style="color: #dc2626; font-size: 1.1rem; margin-bottom: 0.5rem;">⚠️ Риск</h3>
+                    <p style="font-size: 0.95rem; color: #1e293b; line-height: 1.4;">Пользователи перестанут набирать корзину для бесплатной доставки → упадет <strong>Средний чек</strong>.</p>
+                </div>
+
+            </div>
         </div>
+    </section>
 
-        <!-- Правая колонка: Текст -->
-        <div style="flex: 1.2; display: flex; flex-direction: column; gap: 1.5rem; justify-content: center;">
-
-            <!-- Карточка Гипотезы -->
-            <div style="background: #ffffff; padding: 1.2rem; border-radius: 10px; border-left: 5px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                <h3 style="color: #10b981; font-size: 1.1rem; margin-bottom: 0.5rem;">🚀 Гипотеза</h3>
-                <p style="font-size: 0.95rem; color: #1e293b; line-height: 1.4;">Добавление кнопки сократит путь пользователя и увеличит <strong>CR (конверсию)</strong>.</p>
-            </div>
-
-            <!-- Карточка Риска -->
-            <div style="background: #ffffff; padding: 1.2rem; border-radius: 10px; border-left: 5px solid #dc2626; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                <h3 style="color: #dc2626; font-size: 1.1rem; margin-bottom: 0.5rem;">⚠️ Риск</h3>
-                <p style="font-size: 0.95rem; color: #1e293b; line-height: 1.4;">Пользователи перестанут набирать корзину для бесплатной доставки → упадет <strong>Средний чек</strong>.</p>
-            </div>
-
+    <!-- Slide 15: Methodological Challenges -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Методологические сложности</h2>
+        <div class="card-container">
+            <ul style="color: #1e293b;">
+                <li><strong>Конформизм и эффект новизны:</strong> пользователи реагируют на «новое», а не на объективно лучшее</li>
+                <li><strong>Недостаточный трафик:</strong> нельзя обнаружить эффект без репрезентативного размера выборки</li>
+                <li><strong>Множественное тестирование:</strong> если тестировать много метрик, вероятность ложного срабатывания растёт</li>
+                <li><strong>Сезонность и дневные циклы:</strong> результат теста может зависеть от дня недели или времени года</li>
+            </ul>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Slide 15: Methodological Challenges -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Методологические сложности</h2>
-    <div class="card-container">
-        <ul style="color: #1e293b;">
-            <li><strong>Конформизм и эффект новизны:</strong> пользователи реагируют на «новое», а не на объективно лучшее</li>
-            <li><strong>Недостаточный трафик:</strong> нельзя обнаружить эффект без репрезентативного размера выборки</li>
-            <li><strong>Множественное тестирование:</strong> если тестировать много метрик, вероятность ложного срабатывания растёт</li>
-            <li><strong>Сезонность и дневные циклы:</strong> результат теста может зависеть от дня недели или времени года</li>
-        </ul>
-    </div>
-</section>
+    <!-- Slide 16: Common Mistakes in Detail -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Главные ошибки в A/B тестировании</h2>
+        <div class="card-container">
+            <ul style="color: #1e293b;">
+                <li><strong>Peeking (подглядывание):</strong> смотреть результаты до окончания теста → ошибка I рода</li>
+                <li><strong>P-hacking (подбор результата):</strong> менять гипотезы/метрики, пока не получишь p &lt; 0.05</li>
+                <li><strong>Отсутствие гипотезы:</strong> запустить тест без чёткой цели и критериев остановки</li>
+                <li><strong>Игнорирование guardrail метрик:</strong> пустил изменение, которое повысило CR, но сломало UX</li>
+            </ul>
+        </div>
+    </section>
 
-<!-- Slide 16: Common Mistakes in Detail -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Главные ошибки в A/B тестировании</h2>
-    <div class="card-container">
-        <ul style="color: #1e293b;">
-            <li><strong>Peeking (подглядывание):</strong> смотреть результаты до окончания теста → ошибка I рода</li>
-            <li><strong>P-hacking (подбор результата):</strong> менять гипотезы/метрики, пока не получишь p &lt; 0.05</li>
-            <li><strong>Отсутствие гипотезы:</strong> запустить тест без чёткой цели и критериев остановки</li>
-            <li><strong>Игнорирование guardrail метрик:</strong> пустил изменение, которое повысило CR, но сломало UX</li>
-        </ul>
-    </div>
-</section>
+    <!-- Slide 17: Sample Size and Power -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Размер выборки и мощность теста</h2>
+        <div class="card-container">
+            <ul style="color: #1e293b;">
+                <li><strong>H₀</strong> (нулевая): между группами нет разницы</li>
+                <li><strong>H₁</strong> (альтернативная): есть разница в интересующую нас сторону</li>
+                <li>Уровень значимости <strong>α</strong> (обычно 0.05) — вероятность ошибки I рода</li>
+                <li>Мощность теста (обычно 0.80) — способность обнаружить истинный эффект</li>
+                <li>Минимальный эффект (MDE) — какую разницу хотим поймать</li>
+            </ul>
+        </div>
+    </section>
 
-<!-- Slide 17: Sample Size and Power -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Размер выборки и мощность теста</h2>
-    <div class="card-container">
-        <ul style="color: #1e293b;">
-            <li><strong>H₀</strong> (нулевая): между группами нет разницы</li>
-            <li><strong>H₁</strong> (альтернативная): есть разница в интересующую нас сторону</li>
-            <li>Уровень значимости <strong>α</strong> (обычно 0.05) — вероятность ошибки I рода</li>
-            <li>Мощность теста (обычно 0.80) — способность обнаружить истинный эффект</li>
-            <li>Минимальный эффект (MDE) — какую разницу хотим поймать</li>
-        </ul>
-    </div>
-</section>
+    <!-- Slide 18: Practical Steps -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Этапы проведения A/B теста</h2>
+        <div class="card-container">
+            <ul style="color: #1e293b;">
+                <li><strong>1. Сформулировать гипотезу</strong>: «Изменение X улучшит Y, потому что…»</li>
+                <li><strong>2. Выбрать метрику и рассчитать n</strong>: сколько пользователей нужно</li>
+                <li><strong>3. Настроить рандомизацию</strong>: случайное распределение в группы</li>
+                <li><strong>4. Собрать данные</strong> по плану (НЕ подглядывай во время!)</li>
+                <li><strong>5. Анализ</strong>: посчитать p-value и доверительный интервал</li>
+                <li><strong>6. Решение</strong>: нулевая гипотеза отвергается (p &lt; α) → запустить</li>
+            </ul>
+        </div>
+    </section>
 
-<!-- Slide 18: Practical Steps -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Этапы проведения A/B теста</h2>
-    <div class="card-container">
-        <ul style="color: #1e293b;">
-            <li><strong>1. Сформулировать гипотезу</strong>: «Изменение X улучшит Y, потому что…»</li>
-            <li><strong>2. Выбрать метрику и рассчитать n</strong>: сколько пользователей нужно</li>
-            <li><strong>3. Настроить рандомизацию</strong>: случайное распределение в группы</li>
-            <li><strong>4. Собрать данные</strong> по плану (НЕ подглядывай во время!)</li>
-            <li><strong>5. Анализ</strong>: посчитать p-value и доверительный интервал</li>
-            <li><strong>6. Решение</strong>: нулевая гипотеза отвергается (p &lt; α) → запустить</li>
-        </ul>
-    </div>
-</section>
+    <!-- Slide 19: P-value and Significance -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">P-value и статистическая значимость</h2>
+        <div class="card-container">
+            <p style="color: #1e293b; margin-bottom: 1.5rem;"><strong style="color: #0284c7; font-size: 1.15rem;">P-value</strong> — вероятность увидеть такие (или более экстремальные) результаты, если H₀ верна</p>
+            <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Правило:</strong> если p-value &lt; α (обычно 0.05) → результат статистически значим</p>
+            <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Доверительный интервал (CI)</strong> — диапазон для истинной разницы между группами</p>
+            <p style="color: #1e293b;">Если 0 не в интервале → статистически значимо на уровне 5%</p>
+        </div>
+    </section>
 
-<!-- Slide 19: P-value and Significance -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">P-value и статистическая значимость</h2>
-    <div class="card-container">
-        <p style="color: #1e293b; margin-bottom: 1.5rem;"><strong style="color: #0284c7; font-size: 1.15rem;">P-value</strong> — вероятность увидеть такие (или более экстремальные) результаты, если H₀ верна</p>
-        <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Правило:</strong> если p-value &lt; α (обычно 0.05) → результат статистически значим</p>
-        <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Доверительный интервал (CI)</strong> — диапазон для истинной разницы между группами</p>
-        <p style="color: #1e293b;">Если 0 не в интервале → статистически значимо на уровне 5%</p>
-    </div>
-</section>
+    <!-- Slide 20: Best Practices -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Лучшие практики в A/B тестировании</h2>
+        <div class="card-container">
+            <ul style="color: #1e293b;">
+                <li><strong>Зафиксируй гипотезу заранее:</strong> не меняй её после просмотра данных</li>
+                <li><strong>Не подглядывай:</strong> жди окончания теста, установи дату завершения заранее</li>
+                <li><strong>Используй несколько метрик:</strong> primary (главная) + guardrail (ограничители) + proxy (ранние сигналы)</li>
+                <li><strong>Проверь дизайн:</strong> рандомизация верна? Группы независимы? Нет утечек трафика?</li>
+                <li><strong>Документируй результаты:</strong> даже если не значимо, напиши отчёт и архивируй для повторного использования</li>
+            </ul>
+        </div>
+    </section>
 
-<!-- Slide 20: Best Practices -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Лучшие практики в A/B тестировании</h2>
-    <div class="card-container">
-        <ul style="color: #1e293b;">
-            <li><strong>Зафиксируй гипотезу заранее:</strong> не меняй её после просмотра данных</li>
-            <li><strong>Не подглядывай:</strong> жди окончания теста, установи дату завершения заранее</li>
-            <li><strong>Используй несколько метрик:</strong> primary (главная) + guardrail (ограничители) + proxy (ранние сигналы)</li>
-            <li><strong>Проверь дизайн:</strong> рандомизация верна? Группы независимы? Нет утечек трафика?</li>
-            <li><strong>Документируй результаты:</strong> даже если не значимо, напиши отчёт и архивируй для повторного использования</li>
-        </ul>
-    </div>
-</section>
+    <!-- Slide 21: Example Analysis -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Пример: анализ конверсии</h2>
+        <div class="card-container">
+            <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Метрика:</strong> Conversion Rate (доля заказов из всех сессий)</p>
+            <p style="color: #1e293b; margin-bottom: 1rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Группа A:</strong> n=10000, конверсия 2.5%</p>
+            <p style="color: #1e293b; margin-bottom: 1rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Группа B:</strong> n=10000, конверсия 2.8%</p>
+            <p style="color: #1e293b; margin-bottom: 1.5rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Разница:</strong> +0.3% (относительный прирост +12%)</p>
+            <p style="color: #0284c7; font-size: 1.1rem;"><strong>Z-тест для долей → p-value = 0.032 &lt; 0.05</strong></p>
+            <p style="color: #1e293b; margin-top: 1rem;">Результат статистически значим → запускаем в продакшн</p>
+        </div>
+    </section>
 
-<!-- Slide 21: Example Analysis -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-6" style="color: #0284c7; font-size: 2.75rem;">Пример: анализ конверсии</h2>
-    <div class="card-container">
-        <p style="color: #1e293b; margin-bottom: 1.2rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Метрика:</strong> Conversion Rate (доля заказов из всех сессий)</p>
-        <p style="color: #1e293b; margin-bottom: 1rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Группа A:</strong> n=10000, конверсия 2.5%</p>
-        <p style="color: #1e293b; margin-bottom: 1rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Группа B:</strong> n=10000, конверсия 2.8%</p>
-        <p style="color: #1e293b; margin-bottom: 1.5rem;"><strong style="color: #0284c7; font-size: 1.15rem;">Разница:</strong> +0.3% (относительный прирост +12%)</p>
-        <p style="color: #0284c7; font-size: 1.1rem;"><strong>Z-тест для долей → p-value = 0.032 &lt; 0.05</strong></p>
-        <p style="color: #1e293b; margin-top: 1rem;">Результат статистически значим → запускаем в продакшн</p>
-    </div>
-</section>
+    <!-- Slide 22: Python Example -->
+    <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+        <h2 class="mb-4" style="color: #0284c7; font-size: 2.75rem;">Python: z-тест для конверсии</h2>
+        <div class="code-block" style="padding: 1.5rem; font-size: 0.9rem; line-height: 1.6;">
+            <p><span style="color: #a8d5ff;">from</span> <span style="color: #e2e8f0;">statsmodels.stats.proportion</span> <span style="color: #a8d5ff;">import</span> <span style="color: #e2e8f0;">proportions_ztest</span></p>
+            <p><span style="color: #64748b;"># Данные группы A и B</span></p>
+            <p><span style="color: #e2e8f0;">xA, nA</span> <span style="color: #a8d5ff;">=</span> <span style="color: #86efac;">250</span>, <span style="color: #86efac;">10000</span></p>
+            <p><span style="color: #e2e8f0;">xB, nB</span> <span style="color: #a8d5ff;">=</span> <span style="color: #86efac;">280</span>, <span style="color: #86efac;">10000</span></p>
+            <p><span style="color: #64748b;"># Запусти z-тест</span></p>
+            <p><span style="color: #e2e8f0;">stat, p_value</span> <span style="color: #a8d5ff;">=</span> <span style="color: #e2e8f0;">proportions_ztest</span>([<span style="color: #e2e8f0;">xB</span>, <span style="color: #e2e8f0;">xA</span>], [<span style="color: #e2e8f0;">nB</span>, <span style="color: #e2e8f0;">nA</span>])</p>
+            <p><span style="color: #64748b;"># Интерпретация</span></p>
+            <p><span style="color: #a8d5ff;">if</span> <span style="color: #e2e8f0;">p_value</span> <span style="color: #a8d5ff;">&lt;</span> <span style="color: #86efac;">0.05</span>:</p>
+            <p style="margin-left: 1.2rem;"><span style="color: #e2e8f0;">print</span>(<span style="color: #fca5a5;">"Результат значимый! Запускаем B"</span>)</p>
+        </div>
+    </section>
 
-<!-- Slide 22: Python Example -->
-<section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
-    <h2 class="mb-4" style="color: #0284c7; font-size: 2.75rem;">Python: z-тест для конверсии</h2>
-    <div class="code-block" style="padding: 1.5rem; font-size: 0.9rem; line-height: 1.6;">
-        <p><span style="color: #a8d5ff;">from</span> <span style="color: #e2e8f0;">statsmodels.stats.proportion</span> <span style="color: #a8d5ff;">import</span> <span style="color: #e2e8f0;">proportions_ztest</span></p>
-        <p><span style="color: #64748b;"># Данные группы A и B</span></p>
-        <p><span style="color: #e2e8f0;">xA, nA</span> <span style="color: #a8d5ff;">=</span> <span style="color: #86efac;">250</span>, <span style="color: #86efac;">10000</span></p>
-        <p><span style="color: #e2e8f0;">xB, nB</span> <span style="color: #a8d5ff;">=</span> <span style="color: #86efac;">280</span>, <span style="color: #86efac;">10000</span></p>
-        <p><span style="color: #64748b;"># Запусти z-тест</span></p>
-        <p><span style="color: #e2e8f0;">stat, p_value</span> <span style="color: #a8d5ff;">=</span> <span style="color: #e2e8f0;">proportions_ztest</span>([<span style="color: #e2e8f0;">xB</span>, <span style="color: #e2e8f0;">xA</span>], [<span style="color: #e2e8f0;">nB</span>, <span style="color: #e2e8f0;">nA</span>])</p>
-        <p><span style="color: #64748b;"># Интерпретация</span></p>
-        <p><span style="color: #a8d5ff;">if</span> <span style="color: #e2e8f0;">p_value</span> <span style="color: #a8d5ff;">&lt;</span> <span style="color: #86efac;">0.05</span>:</p>
-        <p style="margin-left: 1.2rem;"><span style="color: #e2e8f0;">print</span>(<span style="color: #fca5a5;">"Результат значимый! Запускаем B"</span>)</p>
-    </div>
-</section>
+    <!-- Slide 23: Key Takeaways -->
+    <section class="slide p-16 col center" style="background-color: #f8fafc; color: #0f172a;">
+        <h2 class="text-4xl mb-8" style="color: #0284c7; font-size: 2.75rem;">Итоги</h2>
+        <div class="card-container" style="text-align: left; max-width: 750px; margin: 0 auto;">
+            <ul style="color: #1e293b;">
+                <li>A/B тест — контролируемый эксперимент на данных, не на интуиции</li>
+                <li>Выбор теста зависит от типа метрики (доли vs средние) и её распределения</li>
+                <li>P-value &lt; α → результат статистически значим, можно действовать</li>
+                <li>Не подглядывай во время теста и не меняй гипотезу по результатам</li>
+                <li>Бутстреп — универсальный инструмент для нестандартных метрик</li>
+            </ul>
+        </div>
+    </section>
 
-<!-- Slide 23: Key Takeaways -->
-<section class="slide p-16 col center" style="background-color: #f8fafc; color: #0f172a;">
-    <h2 class="text-4xl mb-8" style="color: #0284c7; font-size: 2.75rem;">Итоги</h2>
-    <div class="card-container" style="text-align: left; max-width: 750px; margin: 0 auto;">
-        <ul style="color: #1e293b;">
-            <li>A/B тест — контролируемый эксперимент на данных, не на интуиции</li>
-            <li>Выбор теста зависит от типа метрики (доли vs средние) и её распределения</li>
-            <li>P-value &lt; α → результат статистически значим, можно действовать</li>
-            <li>Не подглядывай во время теста и не меняй гипотезу по результатам</li>
-            <li>Бутстреп — универсальный инструмент для нестандартных метрик</li>
-        </ul>
-    </div>
-</section>
+    <!-- Slide 24: Thank You -->
+    <section class="slide p-16 col center" style="background-color: #f8fafc; color: #0f172a;">
+        <h2 class="text-5xl mb-8" style="color: #0284c7;">Спасибо!</h2>
+        <p class="text-xl" style="color: #1e293b;">Вопросы?</p>
+    </section>
+</div>
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
 
-<!-- Slide 24: Thank You -->
-<section class="slide p-16 col center" style="background-color: #f8fafc; color: #0f172a;">
-    <h2 class="text-5xl mb-8" style="color: #0284c7;">Спасибо!</h2>
-    <p class="text-xl" style="color: #1e293b;">Вопросы?</p>
-</section>
+    // Показать слайд по индексу
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            if (i === index) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+    }
 
+    // Переключение вперед/назад
+    function changeSlide(direction) {
+        currentSlide += direction;
+        if (currentSlide < 0) currentSlide = 0;
+        if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+        showSlide(currentSlide);
+    }
+
+    // Управление с клавиатуры
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "ArrowRight" || event.key === " " || event.key === "Enter") {
+            changeSlide(1);
+        } else if (event.key === "ArrowLeft") {
+            changeSlide(-1);
+        }
+    });
+
+    // Инициализация
+    showSlide(0);
+</script>
 </body>
 </html>
