@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доклад: Драгоценные камни</title>
+    <style>
+        /* --- Основные стили страницы (Темная тема) --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #0f0f0f; /* Почти черный фон страницы */
+            color: #e0e0e0; /* Светлый текст */
+            overflow: hidden;
+        }
+
+        /* --- Контейнер для слайд-шоу --- */
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Стилизация слайда (Темная карта) --- */
+        .slide {
+            display: none;
+            width: 85%;
+            max-width: 1200px;
+            height: 85%;
+            padding: 60px;
+            box-sizing: border-box;
+            background-color: #1a1a1a; /* Темно-серый фон слайда */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); /* Глубокая тень */
+            border: 1px solid #333; /* Тонкая рамка */
+            border-radius: 4px;
+            border-left: 6px solid #d4af37; /* Золотая полоса слева */
+            flex-direction: column;
+            justify-content: flex-start;
+            animation: fadeIn 0.5s;
+            overflow-y: auto;
+        }
+
+        /* Активный слайд */
+        .active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(10px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        /* --- Типографика --- */
+        h1 {
+            color: #d4af37; /* Золотистый цвет заголовка */
+            font-size: 3rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            color: #f0f0f0;
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            font-weight: 400;
+        }
+
+        h3 {
+            color: #d4af37; /* Золотистые подзаголовки */
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p, li {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #cccccc; /* Светло-серый текст для чтения */
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            padding-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #ffffff; /* Белый для акцентов */
+            font-weight: 600;
+        }
+
+        em {
+            color: #999;
+            font-style: italic;
+        }
+
+        /* --- Навигация (стрелки) --- */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 20px;
+            margin-top: -22px;
+            color: #666;
+            font-weight: bold;
+            font-size: 30px;
+            transition: 0.3s;
+            user-select: none;
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+        .next { right: 20px; }
+        .prev { left: 20px; }
+        .prev:hover, .next:hover {
+            background-color: #d4af37;
+            color: #000;
+        }
+
+        /* --- Номера слайдов и прогресс-бар --- */
+        .footer-info {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            font-size: 14px;
+            color: #555;
+            font-family: monospace;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: #d4af37;
+            transition: width 0.3s;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* --- Сетка для контента --- */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        /* Блок примечания */
+        .note {
+            background-color: #252525;
+            padding: 20px;
+            border-left: 4px solid #777;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            color: #bbb;
+        }
+
+        /* Скроллбар для слайдов с большим текстом */
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+        .slide::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        .slide::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="slideshow-container">
+
+    <!-- Прогресс бар -->
+    <div id="progressBar" class="progress-bar"></div>
+
+    <!-- Слайд 1: Титульный -->
+    <div class="slide active" style="justify-content: center; text-align: center;">
+        <h1 style="border: none;">Драгоценные и полудрагоценные камни</h1>
+        <p style="text-align: center; font-size: 1.6rem; color: #aaa;">Особенности нахождения, обработки и использования</p>
+        <div style="margin: 60px 0; font-size: 1.4rem;">
+            <p><strong>Докладчик:</strong> Воловник Захар</p>
+            <p><strong>Тема:</strong> Геология и минералогия</p>
+        </div>
+        <p style="font-size: 0.9rem; color: #444; margin-top: auto;">Используйте стрелки клавиатуры для навигации</p>
+        <div class="footer-info">1 / 12</div>
+    </div>
+
+    <!-- Слайд 2: Введение -->
+    <div class="slide">
+        <h2>1. Введение: Критерии ценности</h2>
+        <p>Минеральное царство насчитывает тысячи видов, но лишь немногие из них попадают в категорию драгоценных. Основные критерии оценки камня, определяющие его статус:</p>
+        <ul>
+            <li><strong>Красота:</strong> Сочетание цвета, блеска, игры света (дисперсии) и прозрачности.</li>
+            <li><strong>Долговечность:</strong> Устойчивость к механическим повреждениям (твердость) и химическому воздействию. Камень должен сохранять вид столетиями.</li>
+            <li><strong>Редкость:</strong> Чем реже минерал встречается в природе, тем выше его рыночная стоимость.</li>
+        </ul>
+        <div class="note">
+            Примечание: Традиция разделения камней на драгоценные и полудрагоценные устаревает в профессиональной среде, но сохраняется в торговле и законодательстве.
+        </div>
+        <div class="footer-info">2 / 12</div>
+    </div>
+
+    <!-- Слайд 3: Юридическая классификация -->
+    <div class="slide">
+        <h2>2. Классификация (Законодательный аспект РФ)</h2>
+        <p>В Российской Федерации оборот камней регулируется Федеральным законом № 41-ФЗ. Это строгое юридическое определение.</p>
+        <div class="grid-2">
+            <div>
+                <h3>Драгоценные камни (I порядок):</h3>
+                <ul>
+                    <li>Природные алмазы</li>
+                    <li>Изумруды</li>
+                    <li>Рубины</li>
+                    <li>Сапфиры</li>
+                    <li>Александриты</li>
+                    <li>Природный жемчуг (сырой и обработанный)</li>
+                    <li>Уникальные янтарные образования</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Прочие категории:</h3>
+                <ul>
+                    <li><strong>Ювелирные (полудрагоценные):</strong> Топаз, шпинель, аквамарин, гранат, турмалин, хризолит, циркон.</li>
+                    <li><strong>Ювелирно-поделочные:</strong> Нефрит, лазурит, малахит, агат, яшма, чароит. Непрозрачные камни, используемые как для вставок, так и для камнерезных изделий.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-info">3 / 12</div>
+    </div>
+
+    <!-- Слайд 4: Физические свойства -->
+    <div class="slide">
+        <h2>3. Физические свойства (Геммология)</h2>
+        <p>Для идентификации и оценки камней используются точные физические параметры.</p>
+        <ul>
+            <li><strong>Твердость (Шкала Мооса):</strong> Относительная шкала от 1 (тальк) до 10 (алмаз).
+                <br><em>Примеры:</em> Корунд (9), Топаз (8), Кварц (7). Кварц является основным компонентом бытовой пыли, поэтому камни с твердостью ниже 7 со временем тускнеют от микроцарапин.</li>
+            <li><strong>Плотность:</strong> Отношение массы к объему. Позволяет отличить камень от стекла или пластика.</li>
+            <li><strong>Спайность:</strong> Способность кристалла раскалываться по плоским поверхностям. Алмаз очень твердый, но хрупкий — его можно расколоть ударом.</li>
+            <li><strong>Оптические эффекты:</strong> Астеризм (эффект звезды), иризация (радужные переливы), плеохроизм (смена цвета под углом).</li>
+        </ul>
+        <div class="footer-info">4 / 12</div>
+    </div>
+
+    <!-- Слайд 5: Геология (Магматическое и метаморфическое) -->
+    <div class="slide">
+        <h2>4. Геология: Происхождение в недрах</h2>
+        <p>Большинство драгоценных камней образуются в экстремальных условиях земной коры.</p>
+        <h3>1. Магматическое происхождение</h3>
+        <p>Кристаллизация происходит при остывании магмы.
+            <br>— <strong>Алмазы:</strong> Образуются на глубине 150-200 км при огромном давлении и выносятся на поверхность кимберлитовыми трубками взрыва.
+            <br>— <strong>Пегматиты:</strong> В остаточных расплавах магмы концентрируются редкие элементы, образуя топазы, бериллы, турмалины.</p>
+
+        <h3>2. Метаморфическое происхождение</h3>
+        <p>Возникают при изменении осадочных или магматических пород под действием температуры и давления (без плавления). Так рождаются рубины, сапфиры и гранаты в сланцах и мраморах.</p>
+        <div class="footer-info">5 / 12</div>
+    </div>
+
+    <!-- Слайд 6: Геология (Осадочное и органическое) -->
+    <div class="slide">
+        <h2>5. Осадочные процессы и органика</h2>
+
+        <h3>3. Осадочные процессы (Гидротермальные и выветривание)</h3>
+        <p>Горячие водные растворы, циркулирующие в трещинах, откладывают минералы.
+            <br>— <strong>Малахит:</strong> Образуется в зонах окисления медных месторождений.
+            <br>— <strong>Опал:</strong> Представляет собой природный гель кремнезема с содержанием воды.</p>
+
+        <h3>4. Органическое происхождение</h3>
+        <p>Камни, созданные живыми организмами:</p>
+        <ul>
+            <li><strong>Жемчуг:</strong> Продукт жизнедеятельности моллюсков (арагонит).</li>
+            <li><strong>Янтарь:</strong> Окаменевшая ископаемая смола хвойных деревьев.</li>
+            <li><strong>Гагат:</strong> Разновидность каменного угля.</li>
+            <li><strong>Коралл:</strong> Известковые скелеты морских полипов.</li>
+        </ul>
+        <div class="footer-info">6 / 12</div>
+    </div>
+
+    <!-- Слайд 7: Добыча -->
+    <div class="slide">
+        <h2>6. Методы добычи</h2>
+        <div class="grid-2">
+            <div>
+                <h3>Коренные месторождения (Карьеры и шахты)</h3>
+                <p>Добыча ведется непосредственно из материнской породы.
+                    <br><em>Пример:</em> Алмазные карьеры в Якутии или ЮАР. Это масштабные горные работы с применением взрывчатки и тяжелой техники. Глубина карьеров достигает 600 метров и более.</p>
+            </div>
+            <div>
+                <h3>Россыпные месторождения</h3>
+                <p>Вторичные месторождения, образованные разрушением коренных пород и переносом минералов реками.
+                    <br><em>Пример:</em> Добыча сапфиров на Шри-Ланке или золота и алмазов в руслах рек. Используются драги или промывка грунта (иногда вручную).</p>
+            </div>
+        </div>
+        <div class="note">
+            Этическая проблема: Добыча часто связана с экологическим ущербом, поэтому растет спрос на камни с сертификатом происхождения.
+        </div>
+        <div class="footer-info">7 / 12</div>
+    </div>
+
+    <!-- Слайд 8: Обработка -->
+    <div class="slide">
+        <h2>7. Технологии обработки (Огранка)</h2>
+        <p>Сырой кристалл редко раскрывает свою красоту без вмешательства человека.</p>
+        <ul>
+            <li><strong>Фацетная огранка (Гранение):</strong> Нанесение множества плоских граней под строго рассчитанными углами. Свет проникает в камень, отражается от задних граней и выходит обратно, создавая блеск.
+                <br><em>Типы:</em> Бриллиантовая (Кр-57), Принцесса, Изумрудная, Овал.</li>
+            <li><strong>Кабошон:</strong> Придание камню гладкой выпуклой формы с плоским основанием. Применяется для непрозрачных камней (бирюза, нефрит, лазурит) или для выявления эффекта "кошачьего глаза".</li>
+            <li><strong>Глиптика:</strong> Искусство резьбы по камню (камеи, инталии, печати).</li>
+        </ul>
+        <div class="footer-info">8 / 12</div>
+    </div>
+
+    <!-- Слайд 9: Синтетические камни -->
+    <div class="slide">
+        <h2>8. Синтетические камни и имитации</h2>
+        <p>Современные технологии позволяют выращивать аналоги природных камней.</p>
+        <ul>
+            <li><strong>Синтетические камни:</strong> Полные аналоги природных по химическому составу, кристаллической решетке и физическим свойствам, но выращенные в лаборатории.
+                <br><em>Методы:</em> Метод Вернейля, Чохральского, гидротермальный синтез, HPHT (высокое давление и температура). Они часто чище и дешевле природных.</li>
+            <li><strong>Имитации (Симулянты):</strong> Материалы, лишь внешне напоминающие драгоценный камень, но имеющие другой состав.
+                <br><em>Пример:</em> Фианит (кубический цирконий) или стразы (стекло) как имитация бриллианта.</li>
+        </ul>
+        <div class="footer-info">9 / 12</div>
+    </div>
+
+    <!-- Слайд 10: Оценка стоимости -->
+    <div class="slide">
+        <h2>9. Оценка стоимости: Система 4C</h2>
+        <p>Международный стандарт оценки (GIA), применяемый преимущественно к алмазам:</p>
+        <ol>
+            <li><strong>Carat weight (Вес):</strong> Измеряется в каратах (1 ct = 0.2 грамма). Стоимость растет не линейно, а скачкообразно при переходе через границы веса (0.5, 1.0 карат).</li>
+            <li><strong>Color (Цвет):</strong> Для бриллиантов ценится отсутствие цвета (D-F), для цветных камней — насыщенность и чистота оттенка.</li>
+            <li><strong>Clarity (Чистота):</strong> Отсутствие внутренних включений, трещин и внешних дефектов. Камни категории IF (Internally Flawless) крайне редки.</li>
+            <li><strong>Cut (Огранка):</strong> Качество работы огранщика. Пропорции, симметрия и полировка определяют игру света.</li>
+        </ol>
+        <div class="footer-info">10 / 12</div>
+    </div>
+
+    <!-- Слайд 11: Применение -->
+    <div class="slide">
+        <h2>10. Сферы использования</h2>
+        <div class="grid-2">
+            <div>
+                <h3>Ювелирное дело</h3>
+                <p>Традиционная сфера. Изготовление колец, серег, колье. Крупные камни высшего качества являются предметом коллекционирования и инвестиций (тезаврация), так как их цена исторически растет быстрее инфляции.</p>
+            </div>
+            <div>
+                <h3>Промышленность и техника</h3>
+                <p>Технические камни (не ювелирного качества) и синтетика незаменимы:</p>
+                <ul>
+                    <li><strong>Алмаз:</strong> Режущий инструмент, бурение скважин, теплоотводы в микроэлектронике.</li>
+                    <li><strong>Рубин:</strong> Активные элементы твердотельных лазеров.</li>
+                    <li><strong>Сапфир:</strong> Защитные стекла сканеров, часов, смартфонов, оптические окна.</li>
+                    <li><strong>Кварц:</strong> Пьезоэлектрические элементы, стабилизаторы частоты.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-info">11 / 12</div>
+    </div>
+
+    <!-- Слайд 12: Заключение -->
+    <div class="slide">
+        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="border: none; font-size: 3rem; color: #d4af37;">Заключение</h2>
+            <p style="font-size: 1.5rem; max-width: 800px; margin: 0 auto; color: #ccc;">
+                Драгоценные камни представляют собой уникальный ресурс. Это не только символ статуса и красоты, но и важнейший материал для современной науки и промышленности.
+            </p>
+            <p style="font-size: 1.3rem; margin-top: 40px; color: #aaa;">
+                Понимание их природы, свойств и методов обработки позволяет оценить истинную значимость этих даров Земли.
+            </p>
+            <p style="margin-top: 60px; color: #555; font-size: 1.2rem;">Спасибо за внимание</p>
+        </div>
+        <div class="footer-info">12 / 12</div>
+    </div>
+
+    <!-- Кнопки управления -->
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+</div>
+
+<script>
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    // Функция переключения (вперед/назад)
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    // Основная логика отображения
+    function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("slide");
+        let progressBar = document.getElementById("progressBar");
+
+        // Циклическая прокрутка
+        if (n > slides.length) {slideIndex = 1}
+        if (n < 1) {slideIndex = slides.length}
+
+        // Скрываем все слайды
+        for (i = 0; i < slides.length; i++) {
+            slides[i].classList.remove("active");
+            slides[i].style.display = "none";
+        }
+
+        // Показываем текущий
+        slides[slideIndex-1].style.display = "flex";
+        slides[slideIndex-1].classList.add("active");
+
+        // Обновляем прогресс-бар
+        if (progressBar) {
+            let percentage = (slideIndex / slides.length) * 100;
+            progressBar.style.width = percentage + "%";
+        }
+    }
+
+    // Управление клавиатурой
+    document.addEventListener('keydown', function(event) {
+        if(event.key === "ArrowRight" || event.key === "Space" || event.key === "Enter") {
+            plusSlides(1);
+        }
+        else if(event.key === "ArrowLeft") {
+            plusSlides(-1);
+        }
+    });
+</script>
+
+</body>
+</html>
